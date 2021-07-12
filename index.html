@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>JSON&AJAX</title>
+    <meta charset="UTF-8">
+    <style>
+        .box {
+            font-size: 1.5em;
+            background-color: aliceblue;
+            border: 1px solid black;
+            padding: 10px;
+            margin: 10px;
+        }
+
+        img {
+            margin: 15px;
+            width: 150px;
+            border: 1px solid black;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="output"></div>
+    <input type="button" id="myBtn" value="New Country">
+    <input type="text" id="guess">
+    <input type="button" id="myGuess" value="Guess"><br>
+    <img src="" alt="Country Flag"><br>
+    <div id="output1" class="box"></div>
+    <div id="output2" class="box"></div>
+
+    <script>
+        window.onload = init;
+        let pick = '';
+
+        function init() {
+            let myBtn = document.getElementById('myBtn');
+            myBtn.addEventListener('click', myLoader, false);
+            let myGuessBtn = document.getElementById('myGuess');
+            myGuessBtn.addEventListener('click', guessWord, false);
+        }
+
+        function guessWord() {
+            let guessValue = document.getElementById('guess').value;
+            guessValue.toLowerCase();
+            let userGuess = '';
+            for (let i = 0; i < pick.name.length; i++) {
+                if (i >= guessValue.length) { break; }
+                if (guessValue[i] == pick.name[i].toLowerCase()) {
+                    userGuess += guessValue[i];
+                } else {
+                    userGuess += '-';
+                }
+            }
+            document.getElementById('output2').innerHTML = userGuess;
+        }
+
+        function myLoader() {
+            let xHR = new XMLHttpRequest();
+            xHR.onload = rOutput;
+            xHR.open('GET', 'https://restcountries.eu/rest/v2/all', true);
+            xHR.send();
+        }
+
+        function rOutput() {
+            let myObj = JSON.parse(this.responseText);
+            pick = myObj[Math.floor(Math.random() * myObj.length)];
+            let ww = '';
+            for (let i = 0; i < pick.name.length; i++) {
+                ww += '-';
+            }
+            document.querySelector('img').src = pick.flag;
+            document.getElementById('output1').innerHTML = shuffleWord(pick.name);
+            document.getElementById('output2').innerHTML = ww;
+        }
+
+        function shuffleWord(w) {
+            let response = '';
+            w = w.split('');
+            while (w.length > 0) {
+                response += w.splice(Math.floor(Math.random() * w.length), 1);
+            }
+            return response.toLowerCase();
+            console.log(w);
+        }
+    </script>
+</body>
+
+</html>
